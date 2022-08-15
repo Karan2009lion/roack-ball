@@ -1,121 +1,123 @@
+
 const Engine = Matter.Engine;
-const World= Matter.World;
+const World = Matter.World;
 const Bodies = Matter.Bodies;
+const Body = Matter.Body;
 
-var engine, world;
+let engine;
+let world;
+var angle=60;
 
-var particle1, particle2,particle3,particle4,particle5;
-var particle6, particle7,particle8,particle9,particle10;
-var rotator1, rotator2, rotator3;
-var block1, block2;
+var ground;
+var b1,b2,b3,b4;
+var top_wall;
+var ball,rock;
 
-var angle1=60;
-var angle2=60;
-var angle3=60;
+var btn1;
+var btn2;
+function setup() {
+  createCanvas(600,600);
 
-function setup(){
-    var canvas = createCanvas(550,600);
-    engine = Engine.create();
-    world = engine.world;
+  engine = Engine.create();
+  world = engine.world;
+  
+   
+  var ground_options ={
+    isStatic: true
+  };
+  var ground1_options ={
+    isStatic: true
+  };
+  var ground2_options ={
+    isStatic: true
+  };
+  var ground3_options ={
+    isStatic: true
+  };
+  var ball_options = {
+    //write a code to set value of restitution such that:
+    restitution: 0.95,
+    frictionAir:0.02
+//Ball (white circle) bounces more when it hits the bottom.
 
-    //created plane and block bodies
-    var plane_options={
-      isStatic: true
-    }
+  }
 
-    plane = Bodies.rectangle(600,height,1200,20,plane_options);
-    World.add(world,plane);
-    block1=Bodies.rectangle(100,400,150,20,plane_options);
-    World.add(world,block1);
-    block2=Bodies.rectangle(400,400,150,20,plane_options);
-    World.add(world,block2);
+  var rock_options = {
+   // write a code to set value of restitution such that:
+   restitution:0.50,
+   frictionAir:0.01
+   // Rock (Red Circle) bounces less when it hits the bottom.
+  }
+   
+  btn2 = createImg('up.png');
+  btn2.position(30,500);
+  btn2.size(50,50);
+  btn2.mouseClicked(vForce);
+  btn3=createImg("right.png");
+  btn3.position(100,500);
+  btn3.size(50,50);
+  btn3.mouseClicked(hForce);
+  btn4=createImg("left.png");
+  btn4.position(170,500);
+  btn4.size(50,50);
+  btn4.mouseClicked(lForce);
+  btn5=createImg("down.png");
+  btn5.position(240,500);
+  btn5.size(50,50);
+  btn5.mouseClicked(kForce);
+  
+  ball = Bodies.circle(100,50,20,ball_options);
+  World.add(world,ball);
+  
+  rock = Bodies.circle(250,50,20,rock_options);
+  World.add(world,rock);
 
-    //created multiple of particle bodies 
-    var particle_options = {
-      restitution:0.5,
-      friction:0.01
-    }
+  ground= Bodies.rectangle(300,550,800,20,ground_options);
+  ground1=Bodies.rectangle(550,300,20,800,ground1_options);
+  ground2=Bodies.rectangle(50,300,20,800,ground2_options);
+  ground3=Bodies.rectangle(300,40,800,20,ground3_options);
+  World.add(world, ground1);
+  World.add(world, ground2);
+  World.add(world, ground3);
+  World.add(world, ground);
+ 
 
-    particle1 = Bodies.circle(220,10,10,particle_options);
-    World.add(world,particle1);
-    particle2 = Bodies.circle(220,10,10,particle_options);
-    World.add(world,particle2);
-    particle3 = Bodies.circle(225,10,10,particle_options);
-    World.add(world,particle3);
-    particle4 = Bodies.circle(230,10,10,particle_options);
-    World.add(world,particle4);
-    particle5 =Bodies.circle(230,10,10,particle_options);
-    World.add(world,particle5);
-
-    var rotator_options={
-      
-       isStatic:true
-    };
-
-    // rotator1 = rectangle(250,200,150,20,rotator_options);
-    // World.add(world,rotator1);
-
-    // rotator1 = Bodies.rectangle();
-    // World.add(world,rotator1);
-
-    // rotator1 = Bodies.circle(250,200,150,20,rotator_options);
-    // World.add(world,rotator1);
-
-     rotator1 = Bodies.rectangle(250,200,150,20,rotator_options);
-    World.add(world,rotator1);
-
-    rotator2 = Bodies.rectangle(250,200,150,20,rotator_options);
-    World.add(world,rotator2);
-
-    rotator3 = Bodies.rectangle(250,200,150,20,rotator_options);
-    World.add(world,rotator3);
-
-    //styling the bodies here
-    fill("brown");
-    rectMode(CENTER);
-    ellipseMode(RADIUS);
-
+  rectMode(CENTER);
+  ellipseMode(RADIUS);
 }
 
-function draw(){
-    background("lightgreen");
-    Engine.update(engine);
 
- // //created shape for plane and stand
-  rect(plane.position.x,plane.position.y,1200,20);
-  rect(block1.position.x,block1.position.y,150,20);
-  rect(block2.position.x,block2.position.y,150,20);
-
- ////created shape for all the paticles
-  ellipse(particle1.position.x,particle1.position.y,10);
-  ellipse(particle2.position.x,particle2.position.y,10);
-  ellipse(particle3.position.x,particle3.position.y,10);
-  ellipse(particle4.position.x,particle4.position.y,10);
-  ellipse(particle5.position.x,particle5.position.y,10);
-
-  ////created shape for all the rotators
-  Matter.Body.rotate(rotator1,angle1)
-  push();
-  translate(rotator1.position.x,rotator1.position.y);
-  rotate(angle2);
-  rect(0,0,150,20);
-  pop();
-  angle2 +=0.2;
-
-  Matter.Body.rotate(rotator2,angle2)
-  push();
-  translate(rotator2.position.x,rotator2.position.y);
-  rotate(angle2);
-  rect(0,0,150,20);
-  pop();
-  angle2 +=0.3;
-
-  Matter.Body.rotate(rotator3,angle3)
-  push();
-  translate(rotator3.position.x,rotator3.position.y);
-  rotate(angle2);
-  rect(0,0,150,20);
-  pop();
-  angle2 +=0.4;
-    
+function draw() 
+{
+  background(51);
+  Engine.update(engine);
+  
+rect(ground.position.x,ground.position.y,800,20);
+rect(ground1.position.x,ground1.position.y,20,800);
+rect(ground2.position.x,ground2.position.y,20,800);
+rect(ground3.position.x,ground3.position.y,800,20);
+ellipse(ball.position.x,ball.position.y,20);
+push();
+fill("brown");
+ellipse(rock.position.x,rock.position.y,20);
+pop();
 }
+
+function vForce()
+{
+ //write a code to move ball up when the button is clicked.
+ Matter.Body.applyForce(ball,{x:0,y:0},{x:0,y:-0.05});
+}
+function hForce() {
+  Matter.Body.applyForce(ball,{x:0,y:0},{x:0.01,y:0});
+}
+function lForce() {
+  Matter.Body.applyForce(ball,{x:0,y:0},{x:-0.01,y:0});
+}
+function kForce(){
+  Matter.Body.applyForce(ball,{x:0.1,y:0},{x:0,y:0.05});
+}
+
+  
+
+
